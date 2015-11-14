@@ -1,0 +1,7 @@
+# Mac and Vim Artifacts
+*.swp
+*.swo
+.DS_Store
+
+# Sqlite DB's
+*.db
