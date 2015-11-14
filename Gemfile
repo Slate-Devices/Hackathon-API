@@ -6,3 +6,5 @@ gem "sinatra-sequel"
 gem "sqlite3"
 gem "oj"
 gem "sinatra-cross_origin", "~> 0.3.1"
+
+gem "shotgun"
