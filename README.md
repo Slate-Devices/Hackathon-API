@@ -1,4 +1,4 @@
-ImageHound
+Data API
 ======
 
-Sinatra API for CamFind's API
+Hackathon API for Slate
