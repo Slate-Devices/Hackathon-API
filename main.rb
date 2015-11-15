@@ -88,7 +88,7 @@ get "/events/:event_id/ack" do
 end
 
 get "/events/:device_id" do
-  database[:events].filter(device_id: params[:device_id], ackd: false).limit(10).to_a.to_json
+  database[:events].filter(device_id: params[:device_id], ackd: false).to_a.to_json
 end
 
 get "/api/:device_id/:event_type/:amount" do
