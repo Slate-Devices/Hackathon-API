@@ -13,7 +13,7 @@ def init_database
       password    :password, null: false
 
       index :email, :unique => true
-      index :password, :unique => true      
+      index :password
     end
   end unless database.table_exists? :users
 
@@ -34,24 +34,43 @@ def init_database
   migration "create the events table" do
     database.create_table :events do
       primary_key :id
-      string      :name, default: "New Device"
       integer     :device_id, null: false
-      boolean     :severe, default: false, null: false
+      string      :event_type, default: false, null: false
+      float       :amount, default: false, null: false
       timestamp   :event_time, null: false
 
       index :device_id
-      index :severe
-      index :event_time   
+      index :event_type
+      index :amount 
+      index :event_time
     end
   end unless database.table_exists? :events
 end
 
+Sequel.connect('sqlite://slate.db')
+
+class Users < Sequel::Model
+end
+
+class Device < Sequel::Model
+end
+
+class Event < Sequel::Model
+  def to_json
+    {
+      device_id: device_id,
+      event_type: event_type,
+      amount: amount,
+      event_time: event_time
+    }.to_json
+  end
+end
+
 configure do
   set :database, 'sqlite://slate.db'
-
+  
   init_database
 
-  disable :protection
 end
 
 before do
@@ -62,8 +81,14 @@ get "/" do
   { here: "Yes." }.to_json
 end
 
-get "/event" do
-  
+get "/events/:device_id" do
+  database[:events].filter(device_id: params[:device_id]).limit(10).to_a.to_json
+end
+
+get "/api/:device_id/:event_type/:amount" do
+  "Error!" if not params.has_key?(:device_id) and params.has_key?(:event_type) and params.has_key?(:amount)
+  Event.create(device_id: params[:device_id].to_i, event_type: params[:event_type], amount: params[:amount], event_time: DateTime.now)
+  {done: "Yes"}.to_json
 end
 
 # JSONP Cross Origin Setup
