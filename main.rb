@@ -84,7 +84,7 @@ end
 
 get "/events/:event_id/ack" do
   Event[params[:event_id]].update(ackd: true)
-  { done: "Yes" }
+  { done: "Yes" }.to_json
 end
 
 get "/events/:device_id" do
