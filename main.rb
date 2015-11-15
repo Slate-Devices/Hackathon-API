@@ -38,6 +38,7 @@ def init_database
       string      :event_type, default: false, null: false
       float       :amount, default: false, null: false
       timestamp   :event_time, null: false
+      boolean     :ackd, null: false, default: false
 
       index :device_id
       index :event_type
@@ -81,8 +82,13 @@ get "/" do
   { here: "Yes." }.to_json
 end
 
+get "/events/:event_id/ack" do
+  Event[params[:event_id]].update(ackd: true)
+  { done: "Yes" }
+end
+
 get "/events/:device_id" do
-  database[:events].filter(device_id: params[:device_id]).limit(10).to_a.to_json
+  database[:events].filter(device_id: params[:device_id], ackd: false).limit(10).to_a.to_json
 end
 
 get "/api/:device_id/:event_type/:amount" do
